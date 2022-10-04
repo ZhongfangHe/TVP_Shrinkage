@@ -1,0 +1,121 @@
+
+
+\documentclass[12pt]{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{graphicx,psfrag,epsf}
+\usepackage{enumerate}
+\usepackage{natbib}
+\usepackage{url} % not crucial - just used below for the URL 
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{adjustbox}
+\usepackage{appendix}
+
+
+\begin{document}
+%\def\spacingset#1{\renewcommand{\baselinestretch}%
+%{#1}\small\normalsize} \spacingset{1}
+%\spacingset{1.45} % DON'T change the spacing!
+Thanks for your invaluable comments. 
+
+Following the referees' comments, the new draft has made a change to include a spike-and-slab prior in addition to the horseshoe one in the previous version. The description of the spike-and-slab prior can be found in a new subsection (Section 2.1, page 7-9). The estimation algorithm as well as the simulation and empirical results are updated accordingly.
+
+For the empirical study, more scoring rules are applied to compare forecasts, besides the log score in the previous draft. The term spread variable is changed from the 5y-3m spread to the 10y-3m one to be more comparable with the existing literature. This change has little impact on the estimation and forecast results. More importantly, during the update I found that the NBER indicator from the FRED database has been revised to exclude the last two quarters of 2020 and the first quarter of 2021 from the COVID-19 recession. This data revision has a relatively large impact on the estimated coefficient of the short rate variable as well as the forecasts. The draft is updated to accommodate these changes. 
+
+Below I reply to each of the points you raised. The references in the reply can be found in the reference list of the paper.
+
+\section*{General Comments}
+\begin{itemize}
+\item \textit{The paper is not well written and requires editing to improve the exposition and development of the arguments and method.}
+
+\textbf{Reply}: The draft has been updated according to the comments you made to improve the clarity of the notations and to correct grammar errors. The details can be found in the reply below to your specific comments. In the introduction (2nd paragraph of page 2), previous studies of predicting discrete variables that find evidence of model instability are referenced to motivate the introduction of TVP for probit models. In a new subsection (Section 2.1, page 7), a brief review of the Bayesian shrinkage methods is added to provide more background for the readers.   
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \textit{The paper is too dependent upon informal inference on time variation of parameters.}
+\begin{itemize}
+\item \textit{While the author employs the non-centered parameterization of Fruhwirth-Schnatter and Wagner (2010), they claim this is to reduce over-parameterization. However, the Fruhwirth-Schnatter and Wagner (2010) specification includes a binary indicator to turn off time variation when the data suggest this is appropriate. This paper uses the horseshoe prior following recent literature to impose shrinkage. The paper does not however, as far as I can see, use the indicator and so there is no actually reduction in dimension of the model. Rather than using pictures of the histograms for the variance parameters as a rough guide to which parameters are time varying or not, the author could readily include the indicator and the posterior probabilities that these are zero to give more formal on which parameters are time-varying and which are not.}
+\item \textit{As an alternative to eye-balling the histograms mentioned in my comment above, the author could compute the posterior probabilities for time invariance using the Bayes factors derived from the Savage Dickey density ratio. This technique is developed in Chan (2018).}
+\end{itemize}
+
+\textbf{Reply}: A hierarchical spike-and-slab prior is added to the paper besides the horseshoe prior in the previous draft, such that a representative from each of two major categories of Bayesian shrinkage priors (spike-and-slab, continuous shrinkage) is studied and compared. The description of this prior is in Section 2.1 (page 7-9).
+
+The hierarchical spike-and-slab prior does not set the spike to be exact zero and instead shrinks it by a small positive constant ($10^{-6}$ in the paper, $10^{-10}$ in a sensitivity analysis). Nevertheless the posterior of the mixture indicator in this prior is a similarly useful tool for identifying the right model specification as in you comment. On page 8 at the end of the 1st paragraph, a sentence is added ``\textit{It is worth noting that the posterior distribution of the mixture indicators in the spike-and-slab prior helps identify which regression coefficients are indeed time varying as well as the associated uncertainty}" to bring the readers' attention to this benefit of the spike-and-slab prior. In the 2nd paragraph of page 21, the posterior of the mixture indicators is added to test if the proposed model is able to correctly identify which coefficients are time varying and which are not in the simulation study. In the 2nd paragraph of page 24, a similar analysis of the posterior of the mixture indicators is provided for the empirical study. 
+
+For the horseshoe prior, the density of the prior for $v$ and $\beta_0$ has no closed formula when the prior variances are marginalized out and is infinity at zero (Carvalho et al.(2010)). This would make it complicated to calculate the Savage-Dickey density ratio as it needs to compute the marginalized prior density at zero to test if some coefficients are fixed or time varying. With $K$ regressors, there are $2^K$ scenarios as to which coefficients are time varying and which are not when computing Bayes factors. The method of Chan (2018) as suggested in the comment is helpful for the univariate stochastic volatility model studied in that paper but appears difficult to generalize given the proliferation of possible scenarios. Given these considerations, I feel it preferable not to pursue the Savage-Dickey density ratio approach in the current paper.    
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \textit{For comparison of evidence on state space models, recent work has shown the advantages of using the DIC computed unconditionally of the states (and the disadvantages of using the DIC conditional upon the states). As
+the author has developed an algorithm for integrating out the states, if they were able to add computation of the DIC then this would be a nice contribution to inference in these models.}
+
+\textbf{Reply}: There are two levels of latent variable in the proposed model: the latent variable $z_t$ to determine the binary outcome, and the TVP. Assume that the static model parameters are known. While conditional on $z_t$ the TVP can be integrated out by the Kalman filter, integrating out $z_t$ does not lead to a closed formula as shown in Appendix A of the draft, which brings a challenge to compute the conditional likelihood. Maybe numerical integration based on importance sampling for marginalizing out $z_t$ is possible, though I would leave your suggestion as a very interesting topic for future research.  
+\end{itemize}
+
+
+
+\section*{Specific Comments}
+\begin{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \textit{To be comparable, the TVP dynamic probit presented in (2) (and in the
+non-centered specication in (3)) on page 6 and the dynamic model in (1)
+on page 5 need priors for all parameters, such as ($\alpha_0$,$\phi_0$) and ($\alpha$,$\phi$), and
+hyperparameters to be specied.}
+
+\textbf{Reply}: You are right. In Section 2.1, the 3rd paragraph in page 9 is added to explain that, by setting the process variance $v^2$ = 0 in the proposed model, one obtains a dynamic probit model of Equation (1) where the fixed coefficients $\alpha$ and $\phi$ have a spike-and-slab or horseshoe prior similar to the initial regression coefficients $\beta_0$ in the proposed model. A footnote to this paragraph explains that this reduced form of the proposed model does not constrain the AR coefficient $\phi$ and that such an unconstrained $\phi$ appears inconsequential based on the estimates in the simulation and empirical studies. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \textit{No bounds are placed upon the support for $\phi_t$ in (2) such that the process
+$z_t$ could be come non-stationary. This is an unusual feature to permit and
+merits some discussion or treatment in the algorithm.}
+
+\textbf{Reply}: A footnote in page 6 is added to explain that $\phi_t$ is unconstrained such that explosive $z_t$ would be possible in the estimates if supported by the data. Also a footnote of page 9 contains a similar explanation when comparing the proposed model with the dynamic probit one.
+
+If specifying random walks for transformations of $\phi_t$ such as $log(\frac{\phi_t}{1-\phi_t})$, the stationary bounds can be guaranteed but sampling $\phi_t$ will have to be from a nonlinear state space system and the sampling efficiency could be a concern. For this technical reason, in this paper I feel it preferable to leave $\phi_t$ unconstrained and let the data to freely determine its value. As shown in Figures 1, 2 and 5, the resulting point-wise 90\% credible set of $\phi_t$ is typically below 1 in both the simulation and empirical studies, which implies that placing the bounds may have small impact on the final results but would incur substantially more work to sample $\phi_t$.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \textit{Is $\sigma^2$ in (1) identified?}
+
+\textbf{Reply}: The initial value $z_0$ for the latent variable $z_t$ is a parameter to be estimated. The model specifies a prior $z_0 \sim N(0,\sigma^2)$ to let the data determine the appropriate value of $z_0$. The hyper-parameter $\sigma^2$ is fixed at 25 in estimation to produce a reasonably diffuse prior for $z_0$ (2nd paragraph in page 9) and is not to be estimated. The scale of $z_0$ is identified since the disturbance $\epsilon_t$ for $z_t$ is normalized to have a unit variance (Equation (2) in page 6). 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \textit{Throughout the paper, the notation is somewhat sloppy, particularly when
+referring to matrices. For example,}
+\begin{itemize}
+\item \textit{in (2) they use $diag(v^2)$ where $v^2$ is not defined (presumably this is a $K \times 1$ vector $v^2=\{v_i^2\}$);}
+
+\textbf{Reply}: Thanks for pointing this out. An explanation is added immediately below Equation (2) in page 6 ``where $v^2$ is a $K$-by-1 vector of the process variances, $\beta_0$ a $K$-by-1 vector collecting the initial regression coefficients and $v_0^2$ a $K$-by-1 vector of the variances of $\beta_0$". 
+
+\item \textit{in 6th line from the bottom on page 12, they use $diag(2y-1)z>0$ defined as a matrix. The meaning of this expression is not clear. They combine a scalar operator with what appears to be a matrix. This should be an element by element on the elements of a properly defined matrix. Is it the case that the linear constraints on $p(y|z)$ are $(2y_t-1) z_t > 0$ for all $t$ (hence the indicator in the density for $p(z_t|y, x, \beta^*, \theta, z_{-t})$)?}
+
+\textbf{Reply}: Yes, it is now re-written as ``The distribution $p(y|z)$ defines $n$ linear constraints $(2 y_t - 1) z_t > 0$ for $z_t$ over $t$ = 1, ..., $n$" (line 2 of the 1st paragraph in page 14). 
+
+\end{itemize}
+
+\item \textit{Page 19, line 3, Johndrow (2019) is not included in the list of references.}
+
+\textbf{Reply}: It was a placeholder in the initial draft and somehow was forgotten. Thanks for pointing this out. I have added this reference.
+
+\item \textit{The meaning is not clear, but I suspect that on page 4, line 15,  . . . twice
+more accurate . . .should be  . . . twice as accurate . . ..}
+
+\textbf{Reply}: Thanks for correcting me. It is now changed to be ``significantly more accurate" (last line of paragraph 3 in page 4). As the magnitude of the RMSE advantage by the proposed model is dependent on the specific data generating process, saying ``twice as accurate" might lead the readers to treat it as a general result.
+
+\item \textit{Page 3,  . . . fixed, Bayesian shrinkage . . . should be  . . . fixed, a
+Bayesian shrinkage . . ..}
+
+\textbf{Reply}: It is changed to be ``... fixed, Bayesian shrinkage methods are applied ..." (7th line of the first paragraph in page 3) since both spike-and-slab and horseshoe priors are now included. 
+
+\item \textit{Page 4, In a full-sample study of the one-step predictive . . .should be
+In a full-sample study of the one-step ahead predictive . . ..}
+
+\textbf{Reply}: It is changed as per your comment in the 3rd line of the second last paragraph in page 4 as well as in numerous other places of the draft.  
+
+\end{itemize}
+
+
+\end{document}
